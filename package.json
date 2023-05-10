@@ -1,0 +1,29 @@
+{
+  "name": "fortunaauth",
+  "version": "1.0.0",
+  "description": "Auth project",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RahulMohanDev/fortunaAuth.git"
+  },
+  "author": "Rahul Mohan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RahulMohanDev/fortunaAuth/issues"
+  },
+  "homepage": "https://github.com/RahulMohanDev/fortunaAuth#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.1.0",
+    "nodemon": "^2.0.22"
+  }
+}

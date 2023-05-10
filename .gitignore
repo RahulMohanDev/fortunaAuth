@@ -1,0 +1,2 @@
+# .env this should be not be pushed to git
+node_modules
