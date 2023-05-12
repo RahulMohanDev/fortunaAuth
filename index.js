@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 dotenv.config()
 
@@ -25,6 +26,23 @@ const userSchema = new mongoose.Schema({
 
 // creating a user model
 const User = mongoose.model('User', userSchema)
+
+//middleware
+const auth = async (req, res, next) => {
+  const token = req.header('Authorization')
+  console.log(token);
+  if (!token) {
+    res.status(401).send('please login in')
+    return;
+  }
+
+  try {
+    jwt.verify(token, process.env.JWT_SECRET)
+    next()
+  } catch {
+    res.status(401).send('please login in')
+  }
+}
 
 // registering a user
 app.post('/register', async (req, res) => {
@@ -50,11 +68,18 @@ app.post('/login', async (req, res) => {
   try {
     User.findOne({ userName })
       .then(async (user) => {
-        const idValid = await bcrypt.compare(password + process.env.SALT_STRING, user.password);
+        const idValid = await bcrypt.compare(
+          password + process.env.SALT_STRING,
+          user.password,
+        )
         if (idValid) {
-            res.status(200).send('Login Successful')
+          const token = jwt.sign(
+            { _id: user.id, userName: user.userName },
+            process.env.JWT_SECRET,
+          )
+          res.setHeader('Authorization', token).status(200).send('logged in')
         } else {
-            res.status(400).send('Invalid Username or Password')
+          res.status(400).send('Invalid Username or Password')
         }
       })
       .catch((err) => {
@@ -63,6 +88,10 @@ app.post('/login', async (req, res) => {
   } catch (err) {
     res.status(400).send(err.message)
   }
+})
+
+app.get('/superSafe', auth, (req, res) => {
+  res.send('you are logged in yo !')
 })
 
 app.listen(process.env.PORT, () => {
